@@ -1,16 +1,28 @@
 import Header from "@/components/Header";
+import Main from "@/components/Main";
 
-import type { PostType } from "./types";
+import type { PostType } from "@/types";
+import { createRandomPost } from "@/utils";
+
 import "./App.styles.css";
 
+function createInitialPosts(): PostType[] {
+  return Array.from({ length: 30 }, () => createRandomPost());
+}
+
 export default function App() {
-  const searchedPosts: PostType[] = [];
+  const posts = createInitialPosts();
+  const searchedPosts: PostType[] = posts;
   const searchQuery = "";
   const setSearchQuery = () => {
     return;
   };
 
   function handleClearPosts() {
+    return;
+  }
+
+  function handleAddPost() {
     return;
   }
 
@@ -22,6 +34,11 @@ export default function App() {
         onClearPosts={handleClearPosts}
         searchQuery={searchQuery}
         onSetSearchQuery={setSearchQuery}
+      />
+      <Main
+        className="app__main"
+        posts={searchedPosts}
+        onAddPost={handleAddPost}
       />
     </div>
   );
