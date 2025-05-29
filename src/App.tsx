@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Main from "@/components/Main";
 import Archive from "@/components/Archive";
+import Footer from "@/components/Footer/Footer";
 
 import type { PostType } from "@/types";
 import { createRandomPost } from "@/utils";
@@ -42,6 +43,7 @@ export default function App() {
         onAddPost={handleAddPost}
       />
       <Archive className="app__archive" onAddPost={handleAddPost} />
+      <Footer />
     </div>
   );
 }
