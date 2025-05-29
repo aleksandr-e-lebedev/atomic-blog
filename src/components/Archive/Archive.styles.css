@@ -1,0 +1,48 @@
+/* Archive Styles */
+
+.archive {
+  opacity: 75%;
+}
+
+.archive__title {
+  margin-bottom: 2.4rem;
+
+  text-transform: uppercase;
+  color: #333;
+}
+
+.archive__toggle-posts-button {
+  margin-bottom: 2.4rem;
+}
+
+/* ArchivePosts Styles */
+
+.archive__posts {
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  font-size: 90%;
+}
+
+/* ArchivePost Styles */
+
+.archive__post {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-brand-2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.archive__post-text {
+  font-size: 1.4rem;
+}
+
+.archive__add-post-button {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.4rem;
+}

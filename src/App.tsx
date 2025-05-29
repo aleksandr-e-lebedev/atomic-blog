@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Main from "@/components/Main";
+import Archive from "@/components/Archive";
 
 import type { PostType } from "@/types";
 import { createRandomPost } from "@/utils";
@@ -40,6 +41,7 @@ export default function App() {
         posts={searchedPosts}
         onAddPost={handleAddPost}
       />
+      <Archive className="app__archive" onAddPost={handleAddPost} />
     </div>
   );
 }
