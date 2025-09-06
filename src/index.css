@@ -37,6 +37,11 @@ body {
   background: #fff;
 }
 
+.dark-mode {
+  filter: invert(100%);
+  transition: all 0.5s;
+}
+
 /*
 SPACING SYSTEM (px)
 2 / 4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64 / 80 / 96 / 128

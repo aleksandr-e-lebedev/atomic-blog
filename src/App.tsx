@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+import Button from "@/components/Button";
 import Header from "@/components/Header";
 import Main from "@/components/Main";
 import Archive from "@/components/Archive";
@@ -17,6 +18,7 @@ export default function App() {
 
   // Local UI State
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Derived Remote State. These are the posts that will actually be displayed
   const searchedPosts: PostType[] =
@@ -33,6 +35,11 @@ export default function App() {
     void getPosts();
   }, [getPosts]);
 
+  // Sync with External System (Toggling Dark Mode)
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark-mode");
+  }, [isDarkMode]);
+
   return (
     <div className="app">
       <Header
@@ -44,6 +51,15 @@ export default function App() {
       <Main className="app__main" posts={searchedPosts} />
       <Archive className="app__archive" />
       <Footer />
+      <Button
+        type="button"
+        className="app__dark-mode-button"
+        onClick={() => {
+          setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode);
+        }}
+      >
+        {isDarkMode ? "☀️" : "🌙"}
+      </Button>
     </div>
   );
 }
