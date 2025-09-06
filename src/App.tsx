@@ -1,19 +1,20 @@
+import { useEffect } from "react";
+
 import Header from "@/components/Header";
 import Main from "@/components/Main";
 import Archive from "@/components/Archive";
 import Footer from "@/components/Footer/Footer";
 
 import type { PostType } from "@/types";
-import { createRandomPost } from "@/utils";
+import { usePosts } from "./contexts/PostsContext";
 
 import "./App.styles.css";
 
-function createInitialPosts(): PostType[] {
-  return Array.from({ length: 30 }, () => createRandomPost());
-}
-
 export default function App() {
-  const posts = createInitialPosts();
+  // Global Remote State
+  const { getPostsState } = usePosts();
+  const { posts, getPosts } = getPostsState;
+
   const searchedPosts: PostType[] = posts;
   const searchQuery = "";
   const setSearchQuery = () => {
@@ -27,6 +28,11 @@ export default function App() {
   function handleAddPost() {
     return;
   }
+
+  // Sync with External System (Getting Current Posts from API)
+  useEffect(() => {
+    void getPosts();
+  }, [getPosts]);
 
   return (
     <div className="app">

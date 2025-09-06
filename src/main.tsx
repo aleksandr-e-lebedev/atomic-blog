@@ -4,11 +4,15 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 
+import { PostsProvider } from "@/contexts/PostsContext";
+
 import "./api/server.ts";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <PostsProvider>
+      <App />
+    </PostsProvider>
   </StrictMode>
 );
