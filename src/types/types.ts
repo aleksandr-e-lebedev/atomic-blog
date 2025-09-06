@@ -33,3 +33,15 @@ export interface GetArchiveSuccessResponse {
     archive: PostType[];
   };
 }
+
+export interface ArchiveSuccessResponse {
+  status: "success";
+  data: {
+    post: PostType;
+  };
+}
+
+export interface ArchiveFailedResponse {
+  status: "failed";
+  message: string;
+}

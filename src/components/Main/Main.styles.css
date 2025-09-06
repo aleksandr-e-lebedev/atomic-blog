@@ -47,6 +47,8 @@
 .posts__post {
   padding: 1.6rem 2rem;
   border: 1px solid var(--color-brand-2);
+
+  position: relative;
 }
 
 .posts__post:hover {
@@ -63,4 +65,10 @@
 
 .posts__post-text {
   font-size: 1.6rem;
+}
+
+.posts__post-archive-button {
+  position: absolute;
+  top: 1.6rem;
+  right: 0.5rem;
 }

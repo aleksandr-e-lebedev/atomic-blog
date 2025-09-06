@@ -6,9 +6,11 @@ import Button from "@/components/Button";
 import Spinner from "@/components/Spinner";
 import Message from "@/components/Message";
 import ErrorMessage from "@/components/ErrorMessage";
+import ArchiveButton from "@/components/ArchiveButton";
 
 import type { PostType } from "@/types";
 import { usePosts } from "@/contexts/PostsContext";
+import { useArchive } from "@/contexts/ArchiveContext";
 
 import "./Main.styles.css";
 
@@ -77,10 +79,32 @@ interface PostProps {
 }
 
 function Post({ post }: PostProps) {
+  // Global UI and Remote State
+  const { showArchive, archivePostState, getArchiveState } = useArchive();
+  const { archivePost } = archivePostState;
+  const { getArchive } = getArchiveState;
+
+  const { getPostsState } = usePosts();
+  const { getPosts } = getPostsState;
+
+  function handleButtonClick() {
+    async function archive() {
+      await archivePost(post.id, true);
+      await getPosts();
+      if (showArchive) await getArchive();
+    }
+
+    void archive();
+  }
+
   return (
     <li className="posts__post">
       <h3 className="posts__post-title">{post.title}</h3>
       <p className="posts__post-text">{post.body}</p>
+      <ArchiveButton
+        className="posts__post-archive-button"
+        onClick={handleButtonClick}
+      />
     </li>
   );
 }

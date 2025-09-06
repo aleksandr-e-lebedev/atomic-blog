@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useCallback } from "react";
 
-import { useGetArchive } from "@/hooks";
-import type { GetArchiveState } from "@/hooks";
+import { useGetArchive, useArchivePost } from "@/hooks";
+import type { GetArchiveState, ArchivePostState } from "@/hooks";
 
 interface ArchiveState {
   showArchive: boolean;
   toggleArchive: () => void;
   getArchiveState: GetArchiveState;
+  archivePostState: ArchivePostState;
 }
 
 const ArchiveContext = createContext<ArchiveState | null>(null);
@@ -22,11 +23,13 @@ export function ArchiveProvider({ children }: { children: React.ReactNode }) {
 
   // Global Remote State
   const getArchiveState = useGetArchive();
+  const archivePostState = useArchivePost();
 
   const state: ArchiveState = {
     showArchive,
     toggleArchive,
     getArchiveState,
+    archivePostState,
   };
 
   return (
