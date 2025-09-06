@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Header from "@/components/Header";
 import Main from "@/components/Main";
@@ -15,11 +15,18 @@ export default function App() {
   const { getPostsState } = usePosts();
   const { posts, getPosts } = getPostsState;
 
-  const searchedPosts: PostType[] = posts;
-  const searchQuery = "";
-  const setSearchQuery = () => {
-    return;
-  };
+  // Local UI State
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Derived Remote State. These are the posts that will actually be displayed
+  const searchedPosts: PostType[] =
+    searchQuery.length > 0
+      ? posts.filter((post) =>
+          `${post.title} ${post.body}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        )
+      : posts;
 
   function handleAddPost() {
     return;
