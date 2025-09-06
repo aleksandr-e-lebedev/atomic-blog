@@ -1,0 +1,32 @@
+.app {
+  max-width: 114rem;
+  margin: 0 auto;
+  padding: 3.2rem;
+}
+
+.app__header {
+  margin-bottom: 3.2rem;
+}
+
+.app__main {
+  margin-bottom: 4rem;
+}
+
+.app__archive {
+  margin-bottom: 4rem;
+}
+
+.app__dark-mode-button {
+  padding: 1.6rem;
+  border: none;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  font-size: 2.6rem;
+  line-height: 1;
+
+  background-color: var(--color-brand-2);
+  cursor: pointer;
+}

@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Button from "@/components/Button";
+import Header from "@/components/Header";
+import Main from "@/components/Main";
+import Archive from "@/components/Archive";
+import Footer from "@/components/Footer/Footer";
+
+import type { PostType } from "@/types";
+import { usePosts } from "./contexts/PostsContext";
+
+import "./App.styles.css";
+
+export default function App() {
+  // Global Remote State
+  const { getPostsState } = usePosts();
+  const { posts, getPosts } = getPostsState;
+
+  // Local UI State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Derived Remote State. These are the posts that will actually be displayed
+  const searchedPosts: PostType[] =
+    searchQuery.length > 0
+      ? posts.filter((post) =>
+          `${post.title} ${post.body}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        )
+      : posts;
+
+  // Sync with External System (Getting Current Posts from API)
+  useEffect(() => {
+    void getPosts();
+  }, [getPosts]);
+
+  // Sync with External System (Toggling Dark Mode)
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark-mode");
+  }, [isDarkMode]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      <Header
+        className="app__header"
+        posts={searchedPosts}
+        searchQuery={searchQuery}
+        onSetSearchQuery={setSearchQuery}
+      />
+      <Main className="app__main" posts={searchedPosts} />
+      <Archive className="app__archive" />
+      <Footer />
+      <Button
+        type="button"
+        className="app__dark-mode-button"
+        onClick={() => {
+          setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode);
+        }}
+      >
+        {isDarkMode ? "☀️" : "🌙"}
+      </Button>
+    </div>
+  );
 }
-
-export default App
