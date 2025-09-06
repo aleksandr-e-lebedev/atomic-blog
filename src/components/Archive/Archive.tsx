@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
 import Button from "@/components/Button";
+import Spinner from "@/components/Spinner";
+import ErrorMessage from "@/components/ErrorMessage";
+import Message from "@/components/Message";
+
 import type { PostType } from "@/types";
-import { createRandomPost } from "@/utils";
+import { useArchive } from "@/contexts/ArchiveContext";
 
 import "./Archive.styles.css";
 
@@ -31,24 +35,40 @@ function ArchivePost({ post, onAddPost }: ArchivePostProps) {
 }
 
 interface ArchivePostsProps {
-  posts: PostType[];
   onAddPost: (post: PostType) => void;
 }
 
-function ArchivePosts({ posts, onAddPost }: ArchivePostsProps) {
-  return (
-    <ul className="archive__posts">
-      {posts.map((post) => (
-        <ArchivePost key={post.id} post={post} onAddPost={onAddPost} />
-      ))}
-    </ul>
-  );
-}
+function ArchivePosts({ onAddPost }: ArchivePostsProps) {
+  // Global Remote State
+  const { getArchiveState } = useArchive();
+  const { status, posts, error, getArchive } = getArchiveState;
 
-function createInitialPosts(): PostType[] {
-  // 💥 WARNING: This might make your computer slow! Try a smaller `length` first
-  // return Array.from({ length: 10_000 }, () => createRandomPost());
-  return Array.from({ length: 500 }, () => createRandomPost());
+  // Sync with External System (Getting Archive Posts from API)
+  useEffect(() => {
+    void getArchive();
+  }, [getArchive]);
+
+  // Derived Remote State (for Readability)
+  const isLoading = status === "pending";
+  const isLoaded = status === "success";
+  const isEmpty = posts.length === 0;
+
+  return (
+    <>
+      {isLoading && <Spinner />}
+      {isLoaded && (
+        <ul className="archive__posts">
+          {posts.map((post) => (
+            <ArchivePost key={post.id} post={post} onAddPost={onAddPost} />
+          ))}
+        </ul>
+      )}
+      {isLoaded && isEmpty && (
+        <Message message="Start by adding a post to the archive" />
+      )}
+      {error && <ErrorMessage message={error.message} />}
+    </>
+  );
 }
 
 export interface ArchiveProps {
@@ -58,8 +78,9 @@ export interface ArchiveProps {
 
 export default function Archive(props: ArchiveProps) {
   const { className = "", onAddPost } = props;
-  const posts = createInitialPosts();
-  const [showArchive, setShowArchive] = useState(false);
+
+  // Global UI State
+  const { showArchive, toggleArchive } = useArchive();
 
   return (
     <aside className={className ? `archive ${className}` : "archive"}>
@@ -67,13 +88,11 @@ export default function Archive(props: ArchiveProps) {
       <Button
         type="button"
         className="archive__toggle-posts-button"
-        onClick={() => {
-          setShowArchive((s) => !s);
-        }}
+        onClick={toggleArchive}
       >
         {showArchive ? "Hide archive posts" : "Show archive posts"}
       </Button>
-      {showArchive && <ArchivePosts posts={posts} onAddPost={onAddPost} />}
+      {showArchive && <ArchivePosts onAddPost={onAddPost} />}
     </aside>
   );
 }

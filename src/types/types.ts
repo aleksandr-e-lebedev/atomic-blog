@@ -25,3 +25,11 @@ export interface DeletePostsSuccessResponse {
   status: "success";
   message: string;
 }
+
+export interface GetArchiveSuccessResponse {
+  status: "success";
+  results: number;
+  data: {
+    archive: PostType[];
+  };
+}

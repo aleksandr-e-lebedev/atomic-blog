@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.tsx";
 
 import { PostsProvider } from "@/contexts/PostsContext";
+import { ArchiveProvider } from "@/contexts/ArchiveContext";
 
 import "./api/server.ts";
 
@@ -12,7 +13,9 @@ import "./api/server.ts";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PostsProvider>
-      <App />
+      <ArchiveProvider>
+        <App />
+      </ArchiveProvider>
     </PostsProvider>
   </StrictMode>
 );
