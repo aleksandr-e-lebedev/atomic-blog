@@ -20,3 +20,8 @@ export interface AddPostSuccessResponse {
     post: PostType;
   };
 }
+
+export interface DeletePostsSuccessResponse {
+  status: "success";
+  message: string;
+}

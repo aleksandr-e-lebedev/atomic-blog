@@ -21,10 +21,6 @@ export default function App() {
     return;
   };
 
-  function handleClearPosts() {
-    return;
-  }
-
   function handleAddPost() {
     return;
   }
@@ -39,7 +35,6 @@ export default function App() {
       <Header
         className="app__header"
         posts={searchedPosts}
-        onClearPosts={handleClearPosts}
         searchQuery={searchQuery}
         onSetSearchQuery={setSearchQuery}
       />

@@ -2,6 +2,8 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 
 import type { PostType } from "@/types";
+import { usePosts } from "@/contexts/PostsContext";
+
 import "./Header.styles.css";
 
 export interface HeaderProps {
@@ -9,12 +11,24 @@ export interface HeaderProps {
   posts: PostType[];
   searchQuery: string;
   onSetSearchQuery: (query: string) => void;
-  onClearPosts: () => void;
 }
 
 export default function Header(props: HeaderProps) {
-  const { className = "" } = props;
-  const { posts, searchQuery, onSetSearchQuery, onClearPosts } = props;
+  const { className = "", posts, searchQuery, onSetSearchQuery } = props;
+
+  // Global Remote State
+  const { getPostsState, deletePostsState } = usePosts();
+  const { getPosts } = getPostsState;
+  const { deletePosts } = deletePostsState;
+
+  function handleClearPostsButtonClick() {
+    async function clearPosts() {
+      await deletePosts();
+      await getPosts();
+    }
+
+    void clearPosts();
+  }
 
   return (
     <header className={className ? `header ${className}` : "header"}>
@@ -35,7 +49,7 @@ export default function Header(props: HeaderProps) {
         <Button
           type="button"
           className="header__clear-posts-button"
-          onClick={onClearPosts}
+          onClick={handleClearPostsButtonClick}
         >
           Clear posts
         </Button>
