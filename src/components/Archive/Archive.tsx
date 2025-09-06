@@ -7,15 +7,33 @@ import Message from "@/components/Message";
 
 import type { PostType } from "@/types";
 import { useArchive } from "@/contexts/ArchiveContext";
+import { usePosts } from "@/contexts/PostsContext";
 
 import "./Archive.styles.css";
 
 interface ArchivePostProps {
   post: PostType;
-  onAddPost: (post: PostType) => void;
 }
 
-function ArchivePost({ post, onAddPost }: ArchivePostProps) {
+function ArchivePost({ post }: ArchivePostProps) {
+  // Global Remote State
+  const { archivePostState, getArchiveState } = useArchive();
+  const { archivePost } = archivePostState;
+  const { getArchive } = getArchiveState;
+
+  const { getPostsState } = usePosts();
+  const { getPosts } = getPostsState;
+
+  function handleButtonClick() {
+    async function addAndGetPosts() {
+      await archivePost(post.id, false);
+      await getPosts();
+      await getArchive();
+    }
+
+    void addAndGetPosts();
+  }
+
   return (
     <li className="archive__post">
       <p className="archive__post-text">
@@ -24,9 +42,7 @@ function ArchivePost({ post, onAddPost }: ArchivePostProps) {
       <Button
         type="button"
         className="archive__add-post-button"
-        onClick={() => {
-          onAddPost(post);
-        }}
+        onClick={handleButtonClick}
       >
         Add as new post
       </Button>
@@ -34,11 +50,7 @@ function ArchivePost({ post, onAddPost }: ArchivePostProps) {
   );
 }
 
-interface ArchivePostsProps {
-  onAddPost: (post: PostType) => void;
-}
-
-function ArchivePosts({ onAddPost }: ArchivePostsProps) {
+function ArchivePosts() {
   // Global Remote State
   const { getArchiveState } = useArchive();
   const { status, posts, error, getArchive } = getArchiveState;
@@ -59,7 +71,7 @@ function ArchivePosts({ onAddPost }: ArchivePostsProps) {
       {isLoaded && (
         <ul className="archive__posts">
           {posts.map((post) => (
-            <ArchivePost key={post.id} post={post} onAddPost={onAddPost} />
+            <ArchivePost key={post.id} post={post} />
           ))}
         </ul>
       )}
@@ -73,11 +85,10 @@ function ArchivePosts({ onAddPost }: ArchivePostsProps) {
 
 export interface ArchiveProps {
   className?: string;
-  onAddPost: (post: PostType) => void;
 }
 
 export default function Archive(props: ArchiveProps) {
-  const { className = "", onAddPost } = props;
+  const { className = "" } = props;
 
   // Global UI State
   const { showArchive, toggleArchive } = useArchive();
@@ -92,7 +103,7 @@ export default function Archive(props: ArchiveProps) {
       >
         {showArchive ? "Hide archive posts" : "Show archive posts"}
       </Button>
-      {showArchive && <ArchivePosts onAddPost={onAddPost} />}
+      {showArchive && <ArchivePosts />}
     </aside>
   );
 }

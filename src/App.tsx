@@ -28,10 +28,6 @@ export default function App() {
         )
       : posts;
 
-  function handleAddPost() {
-    return;
-  }
-
   // Sync with External System (Getting Current Posts from API)
   useEffect(() => {
     void getPosts();
@@ -46,7 +42,7 @@ export default function App() {
         onSetSearchQuery={setSearchQuery}
       />
       <Main className="app__main" posts={searchedPosts} />
-      <Archive className="app__archive" onAddPost={handleAddPost} />
+      <Archive className="app__archive" />
       <Footer />
     </div>
   );
