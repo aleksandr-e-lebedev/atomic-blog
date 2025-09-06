@@ -43,11 +43,7 @@ export default function App() {
         searchQuery={searchQuery}
         onSetSearchQuery={setSearchQuery}
       />
-      <Main
-        className="app__main"
-        posts={searchedPosts}
-        onAddPost={handleAddPost}
-      />
+      <Main className="app__main" posts={searchedPosts} />
       <Archive className="app__archive" onAddPost={handleAddPost} />
       <Footer />
     </div>

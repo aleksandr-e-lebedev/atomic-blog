@@ -1,24 +1,47 @@
+import { useState } from "react";
+
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
+import Spinner from "@/components/Spinner";
+import Message from "@/components/Message";
+import ErrorMessage from "@/components/ErrorMessage";
 
 import type { PostType } from "@/types";
+import { usePosts } from "@/contexts/PostsContext";
+
 import "./Main.styles.css";
 
 interface AddPostFormProps {
   className?: string;
-  onAddPost: (post: PostType) => void;
 }
 
 function AddPostForm(props: AddPostFormProps) {
-  const { className = "", onAddPost } = props;
+  const { className = "" } = props;
 
-  const title = "";
-  const body = "";
+  // Global Remote State
+  const { addPostState, getPostsState } = usePosts();
+  const { addPost } = addPostState;
+  const { getPosts } = getPostsState;
+
+  // Local UI State
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    return;
+    if (!title || !body) return;
+    const post = { title, body };
+
+    async function addAndGetPosts() {
+      await addPost(post);
+      await getPosts();
+    }
+
+    void addAndGetPosts();
+
+    setTitle("");
+    setBody("");
   }
 
   const formClassName = className
@@ -33,7 +56,7 @@ function AddPostForm(props: AddPostFormProps) {
         placeholder="Post title"
         value={title}
         onChange={(e) => {
-          return;
+          setTitle(e.target.value);
         }}
       />
       <Textarea
@@ -41,7 +64,7 @@ function AddPostForm(props: AddPostFormProps) {
         placeholder="Post body"
         value={body}
         onChange={(e) => {
-          return;
+          setBody(e.target.value);
         }}
       />
       <Button type="submit">Add post</Button>
@@ -50,15 +73,14 @@ function AddPostForm(props: AddPostFormProps) {
 }
 
 interface PostProps {
-  title: string;
-  body: string;
+  post: PostType;
 }
 
-function Post({ title, body }: PostProps) {
+function Post({ post }: PostProps) {
   return (
     <li className="posts__post">
-      <h3 className="posts__post-title">{title}</h3>
-      <p className="posts__post-text">{body}</p>
+      <h3 className="posts__post-title">{post.title}</h3>
+      <p className="posts__post-text">{post.body}</p>
     </li>
   );
 }
@@ -68,12 +90,16 @@ interface PostsProps {
   posts: PostType[];
 }
 
-function Posts({ className = "", posts }: PostsProps) {
+function Posts(props: PostsProps) {
+  const { className = "", posts } = props;
+
   return (
     <div className={className ? `posts ${className}` : "posts"}>
       <ul className="posts__list">
         {posts.map((post) => (
-          <Post key={post.id} title={post.title} body={post.body} />
+          <li className="posts__list-item" key={post.id}>
+            <Post post={post} />
+          </li>
         ))}
       </ul>
     </div>
@@ -83,16 +109,27 @@ function Posts({ className = "", posts }: PostsProps) {
 export interface MainProps {
   className?: string;
   posts: PostType[];
-  onAddPost: (post: PostType) => void;
 }
 
 export default function Main(props: MainProps) {
-  const { className = "", posts, onAddPost } = props;
+  const { className = "", posts } = props;
+
+  // Global Remote State
+  const { getPostsState } = usePosts();
+  const { status, error } = getPostsState;
+
+  // Derived Remote State (for Readability)
+  const isLoading = status === "pending";
+  const isLoaded = status === "success";
+  const isEmpty = posts.length === 0;
 
   return (
     <main className={className ? `main ${className}` : "main"}>
-      <AddPostForm className="main__form" onAddPost={onAddPost} />
-      <Posts className="main__posts" posts={posts} />
+      <AddPostForm className="main__form" />
+      {isLoading && <Spinner />}
+      {isLoaded && <Posts className="main__posts" posts={posts} />}
+      {isLoaded && isEmpty && <Message message="Start by posting a new post" />}
+      {error && <ErrorMessage message={error.message} />}
     </main>
   );
 }

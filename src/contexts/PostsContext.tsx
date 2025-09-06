@@ -1,10 +1,11 @@
 import { createContext, useContext } from "react";
 
-import { useGetPosts } from "@/hooks";
-import type { GetPostsState } from "@/hooks";
+import { useGetPosts, useAddPost } from "@/hooks";
+import type { GetPostsState, AddPostState } from "@/hooks";
 
 interface PostsState {
   getPostsState: GetPostsState;
+  addPostState: AddPostState;
 }
 
 const PostsContext = createContext<PostsState | null>(null);
@@ -13,9 +14,11 @@ PostsContext.displayName = "PostsState";
 export function PostsProvider({ children }: { children: React.ReactNode }) {
   // Remote State
   const getPostsState = useGetPosts();
+  const addPostState = useAddPost();
 
   const state: PostsState = {
     getPostsState,
+    addPostState,
   };
 
   return (

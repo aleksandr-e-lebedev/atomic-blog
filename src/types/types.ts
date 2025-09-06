@@ -13,3 +13,10 @@ export interface GetPostsSuccessResponse {
     posts: PostType[];
   };
 }
+
+export interface AddPostSuccessResponse {
+  status: "success";
+  data: {
+    post: PostType;
+  };
+}
